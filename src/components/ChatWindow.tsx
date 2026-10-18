@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from "react";
-import { ArrowRight, CheckCheck, Check, Send, Truck } from "lucide-react";
+import { ArrowRight, CheckCheck, Check, Send, Truck, History } from "lucide-react";
 import noaImg from "@/assets/noa.jpg";
 import { Avatar } from "./ProfileModal";
+import { MessageHistoryModal } from "./MessageHistoryModal";
 import { demoReply, now, playDing, sendToServer, type Msg, type Profile } from "@/lib/noa";
 
 const STEPS = ["הצלבת מחירון קומקס", "בדיקת משקלי משאיות TRUCK_SPECS", "חישוב פקדונות 60002/60060"];
@@ -37,6 +38,7 @@ export function ChatWindow({
   onBack,
   onOpenProfile,
   settings,
+  onClearChat,
 }: {
   who: Profile;
   messages: Msg[];
@@ -44,9 +46,11 @@ export function ChatWindow({
   onBack: () => void;
   onOpenProfile: () => void;
   settings: { serverUrl: string; apiKey: string };
+  onClearChat?: () => void;
 }) {
   const [text, setText] = useState("");
   const [phase, setPhase] = useState<"idle" | "thinking" | "typing">("idle");
+  const [showHistory, setShowHistory] = useState(false);
   const [typed, setTyped] = useState<string | null>(null);
   const endRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -67,7 +71,7 @@ export function ChatWindow({
     };
     onAdd(mine);
     setPhase("thinking");
-    let reply = demoReply(t, who);
+    let reply = demoReply(t, who, [...messages, mine]);
     if (settings.serverUrl) {
       try {
         await sendToServer(settings.serverUrl, settings.apiKey, who, t);
@@ -128,9 +132,22 @@ export function ChatWindow({
             )}
           </div>
         </div>
-        <button onDoubleClick={onOpenProfile} title="לחיצה כפולה לעריכת כרטיס">
-          <Avatar p={who} size={36} />
-        </button>
+        <div className="flex items-center gap-1.5">
+          <button
+            onClick={() => setShowHistory(true)}
+            className="flex items-center gap-1 rounded-lg bg-black/20 px-2 py-1 text-xs text-header-foreground transition-colors hover:bg-black/30"
+            title="יומן היסטוריית אינטראקציות והקשר לשאילתות"
+          >
+            <History className="h-3.5 w-3.5" />
+            <span className="hidden sm:inline">הקשר</span>
+            <span className="rounded-full bg-primary px-1.5 py-0.2 text-[10px] font-bold text-primary-foreground">
+              {messages.length}
+            </span>
+          </button>
+          <button onDoubleClick={onOpenProfile} title="לחיצה כפולה לעריכת כרטיס">
+            <Avatar p={who} size={36} />
+          </button>
+        </div>
       </header>
 
       {who.aiKnowledge && (
@@ -203,6 +220,18 @@ export function ChatWindow({
           <Send className="h-5 w-5 -scale-x-100" />
         </button>
       </div>
+
+      <MessageHistoryModal
+        isOpen={showHistory}
+        onClose={() => setShowHistory(false)}
+        who={who}
+        messages={messages}
+        onSelectContextPrompt={(p) => setText(p)}
+        onClearHistory={() => {
+          if (onClearChat) onClearChat();
+          setShowHistory(false);
+        }}
+      />
     </div>
   );
 }

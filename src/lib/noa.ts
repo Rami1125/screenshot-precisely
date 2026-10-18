@@ -410,6 +410,150 @@ export const now = () =>
 const KEY = "noa-profiles-v3";
 const SKEY = "noa-settings-v1";
 
+export const INITIAL_MESSAGES: Msg[] = [
+  // נתנאל מגל (מגד שיפוצים)
+  {
+    id: "msg-netanel-1",
+    chatId: "netanel_meged",
+    out: true,
+    text: "שלום נועה, להוסיף להזמנה לקרני שומרון (העוגב 15) שתי חבילות טיט ושתי בלות סומסום.",
+    time: "08:15",
+    read: true,
+  },
+  {
+    id: "msg-netanel-2",
+    chatId: "netanel_meged",
+    out: false,
+    text: "שלום נתנאל. קלטתי את התוספת לאתר העוגב 15. משאית מנוף חכמת משובצת ליציאה מוקדמת ב-06:30. להכניס את התוספת לסידור העבודה מחר?",
+    time: "08:16",
+    read: true,
+  },
+  // אהוד בהר (אודי)
+  {
+    id: "msg-ehud-1",
+    chatId: "ehud_behar",
+    out: true,
+    text: "היי נועה, מה קורה עם המכולה 8 קוב אצלנו בהורד 29?",
+    time: "09:20",
+    read: true,
+  },
+  {
+    id: "msg-ehud-2",
+    chatId: "ehud_behar",
+    out: false,
+    text: "שלום אודי. מכולה 8 קוב בהורד 29 פעילה ומגיעה לתום 10 ימי שכירות ב-28/10/2026. תרצה לתאם הוצאה סופית או החלפה בחדשה?",
+    time: "09:21",
+    read: true,
+  },
+  // ורד אידלסון
+  {
+    id: "msg-vered-1",
+    chatId: "vered",
+    out: true,
+    text: "בוקר טוב נועה, תעברי על תעודות המשלוח של אתמול לבדוק חתימות ושעות מנוף.",
+    time: "09:00",
+    read: true,
+  },
+  {
+    id: "msg-vered-2",
+    chatId: "vered",
+    out: false,
+    text: "שלום ורד, מעקב תעודות וסגירת מעגל מתנהל כסדרו, וברכות חמות לעידן על משחק הכדורסל 🏀! האם לעבור עכשיו על התעודות של חכמת מאתמול?",
+    time: "09:01",
+    read: true,
+  },
+  // ראתב עקאש
+  {
+    id: "msg-ratab-1",
+    chatId: "ratab",
+    out: true,
+    text: "בוקר טוב, צריכים לוחות גבס לבן 280, בלוק 20 ו-8 טיט לרבוצקי 50 רעננה.",
+    time: "07:30",
+    read: true,
+  },
+  {
+    id: "msg-ratab-2",
+    chatId: "ratab",
+    out: false,
+    text: "שלום ראתב. הזמנת הגבס והבלוקים לרבוצקי 50 הוצלבה מול מחירון קומקס. משאית מנוף חכמת משובצת לחלוקה. לאשר ולהכניס לסידור מחר?",
+    time: "07:31",
+    read: true,
+  },
+  // דודי אוזנה
+  {
+    id: "msg-dudi-1",
+    chatId: "dudi_ozana",
+    out: true,
+    text: "היי נועה, אבקש להחליף מכולה בשיבת ציון 30 תל אביב.",
+    time: "10:10",
+    read: true,
+  },
+  {
+    id: "msg-dudi-2",
+    chatId: "dudi_ozana",
+    out: false,
+    text: "היי דודי. מכולת 8 קוב לשיבת ציון 30 נקלטה בסידור. רמסע מכולות מתוכנן לסבב ראשון מחר. לשבץ הגעה מוקדמת?",
+    time: "10:11",
+    read: true,
+  },
+  // ג'ולי
+  {
+    id: "msg-julie-1",
+    chatId: "julie",
+    out: true,
+    text: "באיזה שעה אוסף אותם מחר?",
+    time: "17:41",
+    read: true,
+  },
+  {
+    id: "msg-julie-2",
+    chatId: "julie",
+    out: false,
+    text: "היי ג'ולי, קלטתי את ההודעה ואני מעבירה אותה ישירות לראמי שיחזור אלייך. יש משהו דחוף נוסף שתרצי שאמסור לו?",
+    time: "17:42",
+    read: true,
+  },
+];
+
+const MSG_KEY = "noa-messages-v1";
+
+export const loadMessages = (): Msg[] => {
+  try {
+    const r = localStorage.getItem(MSG_KEY);
+    if (r) {
+      const parsed = JSON.parse(r) as Msg[];
+      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+    }
+  } catch {
+    // Ignore storage errors
+  }
+  try {
+    localStorage.setItem(MSG_KEY, JSON.stringify(INITIAL_MESSAGES));
+  } catch {
+    // Ignore storage errors
+  }
+  return INITIAL_MESSAGES;
+};
+
+export const saveMessages = (msgs: Msg[]) => {
+  try {
+    localStorage.setItem(MSG_KEY, JSON.stringify(msgs));
+  } catch {
+    // Ignore storage errors
+  }
+};
+
+export const clearChatMessages = (chatId: string): Msg[] => {
+  try {
+    const all = loadMessages();
+    const updated = all.filter((m) => m.chatId !== chatId);
+    saveMessages(updated);
+    return updated;
+  } catch {
+    return [];
+  }
+};
+
 export const loadProfiles = (): Profile[] => {
   try {
     const r = localStorage.getItem(KEY);
@@ -446,11 +590,84 @@ export const saveSettings = (s: { serverUrl: string; apiKey: string }) =>
   localStorage.setItem(SKEY, JSON.stringify(s));
 
 /**
- * Intelligent local fallback reply powered by the injected Saban DNA knowledge base.
+ * Intelligent local fallback reply powered by the injected Saban DNA knowledge base
+ * and previous message history context.
  * Follows speechStyle: pingpong, max 2 sentences, no preamble, always one focused question.
  */
-export function demoReply(text: string, who: Profile): string {
-  const lower = text.toLowerCase();
+export function demoReply(text: string, who: Profile, history: Msg[] = []): string {
+  const lower = text.toLowerCase().trim();
+
+  // Find relevant previous messages in this conversation for context
+  const previousChatMsgs = history.filter((m) => m.chatId === who.id);
+  const lastMsg = previousChatMsgs[previousChatMsgs.length - 1];
+  const lastAssistantMsg = [...previousChatMsgs].reverse().find((m) => !m.out);
+
+  // 0. Contextual Follow-up Detection
+  const isAffirmative =
+    /^(כן|כן תאשרי|תאשרי|סגור|מאושר|בסדר|מעולה|אוקי|אחלה|סבבה|למחר)$/.test(lower) ||
+    /^(כן,|כן\s)/.test(lower);
+  const isTimingQuery = /^(מתי|מתי היא מגיעה|באיזה שעה|מתי מגיע|מתי יוצאת|זמנים)/.test(lower);
+  const isAddition = /^(תוסיפי|להוסיף|עוד|גם)/.test(lower);
+
+  if (isAffirmative && lastAssistantMsg) {
+    if (/מכולה|מכולות|החלפה|פינוי/.test(lastAssistantMsg.text)) {
+      return formatNoaWhatsAppReply({
+        emoji: "♻️",
+        headline: "החלפת מכולה עודכנה בסידור",
+        body: `בהמשך לאישורך, בקשת מכולה 8 קוב עבור ${who.name} ננעלה בסידור העבודה.`,
+        bullets: [
+          `📍 אתר: ${who.address || "לפי כרטיס"}`,
+          "📏 נפח: 8 קוב (קו דפנות אפס)",
+          "🚚 משאית: רמסע מכולות סבן",
+          "📋 שובץ ליציאה מוקדמת מחר",
+        ],
+        question: "לשדר כרטיס תמציתי לקבוצת עדכונים מהסידור?",
+      });
+    }
+
+    if (/הזמנה|מלט|חול|גבס|בלוק|טיט/.test(lastAssistantMsg.text)) {
+      return formatNoaWhatsAppReply({
+        emoji: "✅",
+        headline: `אישור הזמנה סופי — ${who.name}`,
+        body: "קלטתי את האישור. ההזמנה אושרה בספרה 1 והוזרקה לגיליון 'הזמנות'.",
+        bullets: [
+          `📍 אתר: ${who.address || "אתר פונה"}`,
+          `🚚 שיוך משאית: ${who.preferredVehicle || "חכמת (מרצדס מנוף 12 טון)"}`,
+          "🏷️ פקדונות 1:1 נרשמו אוטומטית בקומקס",
+          "👷 תויג מחסנאי מלקט (אורן/תמיר)",
+        ],
+        question: "לשלוח אישור ישיר לראמי ולנהג?",
+      });
+    }
+  }
+
+  if (isTimingQuery && lastMsg) {
+    return formatNoaWhatsAppReply({
+      emoji: "⏰",
+      headline: "זמני אספקה מתוכננים",
+      body: `האספקה עבור ${who.name} מתוכננת לסבב בוקר מוקדם בין 07:00 ל-08:30.`,
+      bullets: [
+        `📍 אתר: ${who.address || "לפי כרטיס"}`,
+        `🚚 משאית: ${who.preferredVehicle || "חכמת מנוף 12 טון"}`,
+        "🏢 מחסן יציאה: מחסן 4 (החרש 10, הוד השרון)",
+      ],
+      question: "לתאם שעת פריקה מדויקת יותר מול הנהג בשטח?",
+    });
+  }
+
+  if (isAddition) {
+    return formatNoaWhatsAppReply({
+      emoji: "➕",
+      headline: `עדכון תוספת להזמנה — ${who.name}`,
+      body: "קלטתי את התוספת וחיברתי אותה להזמנה הפעילה בסידור.",
+      bullets: [
+        `📍 אתר: ${who.address || "לפי כרטיס לקוח"}`,
+        "⚖️ בדיקת משקל TRUCK_SPECS עודכנה בהתאם",
+        "🏷️ חישוב פקדונות עודכן 1:1",
+      ],
+      question: "לנעול את התוספת בסידור העבודה למחר?",
+    });
+  }
 
   // 1. אישי / משפחה — ג'ולי
   if (who.category === "אישי-פרטי-משפחה" || who.id === "julie" || who.name.includes("ג'ולי")) {

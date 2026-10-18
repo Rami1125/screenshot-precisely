@@ -10,6 +10,9 @@ import {
   loadSettings,
   saveProfiles,
   saveSettings,
+  loadMessages,
+  saveMessages,
+  clearChatMessages,
   type Msg,
   type Profile,
 } from "@/lib/noa";
@@ -45,6 +48,7 @@ function Index() {
   useEffect(() => {
     setProfiles(loadProfiles());
     setSettings(loadSettings());
+    setMsgs(loadMessages());
   }, []);
 
   useEffect(() => {
@@ -71,7 +75,9 @@ function Index() {
       const marked = m.out
         ? prev
         : prev.map((x) => (x.chatId === m.chatId && x.out ? { ...x, read: true } : x));
-      return [...marked, m];
+      const next = [...marked, m];
+      saveMessages(next);
+      return next;
     });
 
   const filteredProfiles = profiles.filter((p) => {
@@ -230,6 +236,12 @@ function Index() {
             onAdd={addMsg}
             onBack={() => setActive(null)}
             onOpenProfile={() => setEditing(who)}
+            onClearChat={() => {
+              if (who) {
+                const updated = clearChatMessages(who.id);
+                setMsgs(updated);
+              }
+            }}
           />
         ) : (
           <div className="chat-doodle flex flex-1 flex-col items-center justify-center gap-3 text-center">
