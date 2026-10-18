@@ -1,5 +1,3 @@
-import { DNA_KNOWLEDGE, HAREL_TASKS, SPEECH_STYLE } from "./knowledgeData";
-
 export type Category = "קבלן" | "לקוח קבוע" | "הנהלה" | "אישי-פרטי-משפחה" | "לקוח חדש";
 
 export interface Profile {
@@ -19,6 +17,7 @@ export interface Profile {
   avatar: string;
   company?: string;
   preferredVehicle?: string;
+  aiKnowledge?: string;
 }
 
 export interface Msg {
@@ -60,6 +59,7 @@ const mk = (
   preferredVehicle = "חכמת (מרצדס מנוף 12 טון)",
   containerDays = "",
   containerSwap = "",
+  aiKnowledge = "",
 ): Profile => ({
   id,
   name,
@@ -76,6 +76,7 @@ const mk = (
   containerSwap,
   avatar: "",
   preferredVehicle,
+  aiKnowledge: aiKnowledge || notes,
 });
 
 export const DEFAULT_PROFILES: Profile[] = [
@@ -406,7 +407,7 @@ export const DEFAULT_PROFILES: Profile[] = [
 export const now = () =>
   new Date().toLocaleTimeString("he-IL", { hour: "2-digit", minute: "2-digit" });
 
-const KEY = "noa-profiles-v2";
+const KEY = "noa-profiles-v3";
 const SKEY = "noa-settings-v1";
 
 export const loadProfiles = (): Profile[] => {
@@ -562,16 +563,23 @@ export function demoReply(text: string, who: Profile): string {
   }
 
   // 10. הזמנה רגילה עם פריטים / חומרי בניין (מלט, חול, בלוקים, גבס, דבק)
+  const bullets = [
+    `📍 אתר יעד: ${who.address || "נא לוודא כתובת מדויקת"}`,
+    `🚚 שיוך משאית מומלץ: ${who.preferredVehicle || "חכמת (מרצדס מנוף)"}`,
+    "🏷️ חישוב פקדונות 1:1 (בלות 60002 / משטחי מלט 60060) בוצע",
+  ];
+
+  if (who.aiKnowledge) {
+    bullets.push(`🧠 ידע פונה שמור: ${who.aiKnowledge}`);
+  }
+
+  bullets.push("📋 מועבר ישירות לאישור ראמי בספרה 1 להזרקה לסידור");
+
   return formatNoaWhatsAppReply({
     emoji: "🏗️",
     headline: `קליטת הזמנה — ${who.name}`,
     body: "קלטתי את פרטי ההזמנה ומצליבה מול מחירון קומקס, מחסן המוצא (1 או 4) ומשקלי TRUCK_SPECS.",
-    bullets: [
-      `📍 אתר יעד: ${who.address || "נא לוודא כתובת מדויקת"}`,
-      `🚚 שיוך משאית מומלץ: ${who.preferredVehicle || "חכמת (מרצדס מנוף)"}`,
-      "🏷️ חישוב פקדונות 1:1 (בלות 60002 / משטחי מלט 60060) בוצע",
-      "📋 מועבר ישירות לאישור ראמי בספרה 1 להזרקה לסידור",
-    ],
+    bullets,
     question: "לאשר ולהכניס לסידור העבודה למחר בבוקר?",
   });
 }

@@ -90,8 +90,32 @@ export function ProfileModal({
           <div className="sm:col-span-2">{field("כתובת אתר קבועה", "address")}</div>
           {field("זמני פריקה", "unloadHours", "07:00–12:00")}
           {field("הערות גישה (איתוראן)", "notes")}
+          {field("שם חברה / עוסק", "company", "לדוגמה: מגד שיפוצים")}
+          {field("משאית מועדפת / סוג פריקה", "preferredVehicle", "חכמת מנוף / עלי איסוזו")}
           {field("מכולה 8 קוב — ימי שכירות", "containerDays")}
           {field("תאריך פינוי/החלפה", "containerSwap")}
+
+          <label className="flex flex-col gap-1.5 text-xs text-muted-foreground sm:col-span-2 rounded-xl border border-primary/20 bg-primary/5 p-3">
+            <div className="flex items-center justify-between">
+              <span className="font-bold text-foreground flex items-center gap-1.5">
+                🧠 ידע ודגשים ייחודיים לנועה AI על הפונה
+              </span>
+              <span className="text-[10px] font-medium text-primary">
+                יתרום למענה אישי והצלבת נתונים
+              </span>
+            </div>
+            <textarea
+              value={p.aiKnowledge || ""}
+              onChange={(e) => setP({ ...p, aiKnowledge: e.target.value })}
+              rows={3}
+              placeholder="לדוגמה: נועה תזכרי שהלקוח מזמין תמיד בלות חול בלבד ומבקש פריקה עד 08:00 / בנה עידן שחקן כדורסל 🏀 / יש מכולה 8 קוב פעילה להחלפה / לאשר מחירים רק מול ראמי..."
+              className="rounded-lg border border-input bg-card p-2.5 text-xs text-foreground outline-none focus:ring-2 focus:ring-ring leading-relaxed"
+            />
+            <span className="text-[10px] text-muted-foreground">
+              💡 ידע זה מוטמע ישירות במנוע השיחה של נועה AI, מוצג בראש הצ'אט, ומנחה את המענה שלה
+              לפונה.
+            </span>
+          </label>
         </div>
         <div className="mt-5 flex gap-2">
           <button

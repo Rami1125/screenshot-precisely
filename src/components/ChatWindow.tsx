@@ -133,6 +133,20 @@ export function ChatWindow({
         </button>
       </header>
 
+      {who.aiKnowledge && (
+        <div
+          onClick={onOpenProfile}
+          className="flex cursor-pointer items-center justify-between border-b bg-accent/60 px-3.5 py-1.5 text-xs text-accent-foreground transition-colors hover:bg-accent/80"
+          title="לחץ לעריכת כרטיס פונה וידע נועה"
+        >
+          <div className="flex min-w-0 items-center gap-1.5">
+            <span className="shrink-0 font-bold text-primary">🧠 ידע נועה:</span>
+            <span className="truncate text-foreground/90">{who.aiKnowledge}</span>
+          </div>
+          <span className="mr-2 shrink-0 text-[10px] text-muted-foreground">עריכה ✏️</span>
+        </div>
+      )}
+
       <div className="chat-doodle flex-1 space-y-1.5 overflow-y-auto px-3 py-4 sm:px-8">
         {messages.length === 0 && (
           <div className="mx-auto w-fit rounded-lg bg-card/90 px-3 py-1.5 text-xs text-muted-foreground shadow-sm">
