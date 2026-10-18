@@ -1,0 +1,6 @@
+{
+  "name": "נועה AI — סידור ח. סבן חומרי בניין",
+  "description": "ממשק וואטסאפ לנועה AI: הזמנות, תעודות משלוח, מכולות ופרופילי לקוחות.",
+  "permissions": [],
+  "capabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
