@@ -23,7 +23,7 @@ export function ChatWindow({ who, messages, onAdd, onBack, onOpenProfile, settin
   const [phase, setPhase] = useState<"idle" | "thinking" | "typing">("idle");
   const [typed, setTyped] = useState<string | null>(null);
   const endRef = useRef<HTMLDivElement>(null);
-  useEffect(() => endRef.current?.scrollIntoView({ behavior: "smooth" }), [messages, phase, typed]);
+  useEffect(() => { endRef.current?.scrollIntoView({ behavior: "smooth" }); }, [messages, phase, typed]);
 
   const send = async () => {
     const t = text.trim(); if (!t || phase !== "idle") return;
