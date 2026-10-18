@@ -99,7 +99,7 @@ export function ChatWindow({ who, messages, onAdd, onBack, onOpenProfile, settin
 
 function Bubble({ m }: { m: Msg }) {
   return (
-    <div className={`flex ${m.out ? "justify-start" : "justify-end"}`}>
+    <div className={`flex ${m.out ? "justify-end" : "justify-start"}`}>
       <div className={`max-w-[85%] rounded-xl px-3 pb-1 pt-1.5 text-sm leading-relaxed shadow-sm sm:max-w-[65%] ${m.out ? "rounded-tr-none bg-bubble-out" : "rounded-tl-none bg-bubble-in"}`}>
         <div className="break-words">{renderWa(m.text)}</div>
         <div className="mt-0.5 flex items-center justify-end gap-1 text-[10px] text-muted-foreground">
